@@ -14,6 +14,11 @@ model_corn = YOLO("corn_best_50.pt")
 model_corn_names = model_corn.names
 
 
+@app.route("/")
+def hello():
+    return "Hello World!"
+
+
 @app.route("/corn/detect-disease/", methods=["POST"])
 def detect_corn_disease():
     print(request.json)
@@ -33,12 +38,16 @@ def detect_corn_disease():
     results = model_corn.predict(
         imgsz=512, source=img, save=False, save_txt=False, conf=0.3
     )
+    result = None
     detected = []
     for r in results:
         for c in r.boxes.cls:
             detected.append(model_corn_names[int(c)])
 
-    result_dict = {"output": "output_key", "detected": detected[0]}
+    if detected:
+        result = detected[0]
+
+    result_dict = {"output": "output_key", "detected": result}
     return jsonify(result_dict)
 
 
@@ -57,6 +66,7 @@ def detect_crop_disease():
     # convert bytes data to PIL Image object
     img = Image.open(io.BytesIO(img_bytes))
     img.save("Detect/test.png")
+    result = None
     results = model_rice.predict(
         imgsz=512, source=img, save=False, save_txt=False, conf=0.6
     )
@@ -65,7 +75,10 @@ def detect_crop_disease():
         for c in r.boxes.cls:
             detected.append(model_rice_names[int(c)])
 
-    result_dict = {"output": "output_key", "detected": detected[0]}
+    if detected:
+        result = detected[0]
+
+    result_dict = {"output": "output_key", "detected": result}
     return jsonify(result_dict)
 
 
@@ -131,4 +144,4 @@ def detect_crop_disease():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=os.getenv("PORT", default=5000))
+    app.run(debug=False, host="0.0.0.0")
