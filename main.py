@@ -6,10 +6,10 @@ from ultralytics import YOLO
 
 app = Flask(__name__)
 
-model_rice = YOLO("rice_best_70.pt")
+model_rice = YOLO("rice.pt")
 model_rice_names = model_rice.names
 
-model_corn = YOLO("corn_best_80.pt")
+model_corn = YOLO("corn.pt")
 model_corn_names = model_corn.names
 
 
