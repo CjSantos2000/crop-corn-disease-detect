@@ -15,7 +15,7 @@ model_corn_names = model_corn.names
 
 @app.route("/")
 def hello():
-    return "Hello World!12345"
+    return "Crop & Corn Detection API"
 
 
 @app.route("/crop/detect-disease/v1/", methods=["POST"])
